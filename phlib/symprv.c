@@ -491,6 +491,49 @@ VOID PhpSymbolProviderCompleteInitialization(
     PVOID symsrvHandle;
     HANDLE keyHandle;
 
+    WCHAR szDir[MAX_PATH];
+
+    szDir[0] = 0;
+    if (GetEnvironmentVariableW(L"__USER_DBGHELP_DLL_DIR__", szDir, _countof(szDir)))
+    {
+        LPWSTR pszDir = szDir;
+        DWORD dwFileAttib = GetFileAttributesW(pszDir);
+        if ((dwFileAttib != INVALID_FILE_ATTRIBUTES) && (dwFileAttib & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            dbgcoreHandle = NULL;
+            dbghelpHandle = NULL;
+            symsrvHandle = NULL;
+
+            PPH_STRING USER_DBGHELP_DLL_DIR = PhCreateString(pszDir);
+            PhMoveReference(&USER_DBGHELP_DLL_DIR, PhConcatStringRefZ(&USER_DBGHELP_DLL_DIR->sr, L"\\"));
+
+            PPH_STRING dbgcoreName;
+            PPH_STRING dbghelpName;
+            PPH_STRING symsrvName;
+            if (dbgcoreName = PhConcatStringRef2(&USER_DBGHELP_DLL_DIR->sr, &dbgcoreFileName))
+            {
+                dbgcoreHandle = PhLoadLibrary(dbgcoreName->Buffer);
+                PhDereferenceObject(dbgcoreName);
+            }
+
+            if (dbghelpName = PhConcatStringRef2(&USER_DBGHELP_DLL_DIR->sr, &dbghelpFileName))
+            {
+                dbghelpHandle = PhLoadLibrary(dbghelpName->Buffer);
+                PhDereferenceObject(dbghelpName);
+            }
+
+            if (symsrvName = PhConcatStringRef2(&USER_DBGHELP_DLL_DIR->sr, &symsrvFileName))
+            {
+                symsrvHandle = PhLoadLibrary(symsrvName->Buffer);
+                PhDereferenceObject(symsrvName);
+            }
+
+            PhDereferenceObject(USER_DBGHELP_DLL_DIR);
+
+            goto __LOAD_DBGHELP_DLL_FUNCTIONS__;
+        }
+    }
+
     if (
         PhGetLoaderEntryDllBase(NULL, &dbgcoreFileName) &&
         PhGetLoaderEntryDllBase(NULL, &dbghelpFileName) &&
@@ -598,6 +641,7 @@ VOID PhpSymbolProviderCompleteInitialization(
     if (!symsrvHandle)
         symsrvHandle = PhLoadLibrary(L"symsrv.dll");
 
+__LOAD_DBGHELP_DLL_FUNCTIONS__:
     if (dbgcoreHandle)
     {
         MiniDumpWriteDump_I = PhGetDllBaseProcedureAddress(dbgcoreHandle, "MiniDumpWriteDump", 0);
