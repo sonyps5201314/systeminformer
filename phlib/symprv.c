@@ -1688,10 +1688,12 @@ NTSTATUS PhpAccessCallbackFunctionTable(
 
         // Verify the signature is valid and the certificate chained to Microsoft (dmex)
 
+        /*
         if (!PhVerifyFileIsChainedToMicrosoft(&fileName, FALSE))
         {
             return STATUS_ACCESS_DISABLED_BY_POLICY_DEFAULT;
         }
+        */
     }
 
     status = LdrLoadDll(NULL, NULL, OutOfProcessCallbackDllString, &dllHandle);
