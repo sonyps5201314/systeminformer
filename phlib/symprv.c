@@ -407,6 +407,42 @@ VOID PhpSymbolProviderCompleteInitialization(
     PVOID symsrvHandle;
     HANDLE keyHandle;
 
+    LPWSTR pszDir = _wgetenv(L"__USER_DBGHELP_DLL_DIR__");
+    if (pszDir)
+    {
+        DWORD dwFileAttib = GetFileAttributesW(pszDir);
+        if ((dwFileAttib != INVALID_FILE_ATTRIBUTES) && (dwFileAttib & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            PPH_STRING USER_DBGHELP_DLL_DIR = PhCreateString(pszDir);
+            PhMoveReference(&USER_DBGHELP_DLL_DIR, PhConcatStringRefZ(&USER_DBGHELP_DLL_DIR->sr, L"\\"));
+
+            PPH_STRING dbgcoreName;
+            PPH_STRING dbghelpName;
+            PPH_STRING symsrvName;
+            if (dbgcoreName = PhConcatStringRef2(&USER_DBGHELP_DLL_DIR->sr, &dbgcoreFileName))
+            {
+                dbgcoreHandle = PhLoadLibrary(dbgcoreName->Buffer);
+                PhDereferenceObject(dbgcoreName);
+            }
+
+            if (dbghelpName = PhConcatStringRef2(&USER_DBGHELP_DLL_DIR->sr, &dbghelpFileName))
+            {
+                dbghelpHandle = PhLoadLibrary(dbghelpName->Buffer);
+                PhDereferenceObject(dbghelpName);
+            }
+
+            if (symsrvName = PhConcatStringRef2(&USER_DBGHELP_DLL_DIR->sr, &symsrvFileName))
+            {
+                symsrvHandle = PhLoadLibrary(symsrvName->Buffer);
+                PhDereferenceObject(symsrvName);
+            }
+
+            PhDereferenceObject(USER_DBGHELP_DLL_DIR);
+
+            goto __LOAD_DBGHELP_DLL_FUNCTIONS__;
+        }
+    }
+
     if (
         PhGetLoaderEntryDllBase(NULL, &dbgcoreFileName) &&
         PhGetLoaderEntryDllBase(NULL, &dbghelpFileName) &&
@@ -510,6 +546,7 @@ VOID PhpSymbolProviderCompleteInitialization(
     if (!symsrvHandle)
         symsrvHandle = PhLoadLibrary(L"symsrv.dll");
 
+__LOAD_DBGHELP_DLL_FUNCTIONS__:
     if (dbghelpHandle)
     {
         SymInitializeW_I = PhGetDllBaseProcedureAddress(dbghelpHandle, "SymInitializeW", 0);
