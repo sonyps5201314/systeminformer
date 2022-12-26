@@ -1403,7 +1403,7 @@ static BOOLEAN DnClrVerifyFileIsChainedToMicrosoft(
  * \return Always TRUE to continue enumeration.
  */
 _Function_class_(PH_ENUM_DIRECTORY_FILE)
-static BOOLEAN DnpMscordaccoreDirectoryCallback(
+static BOOLEAN NTAPI DnpMscordaccoreDirectoryCallback(
     _In_ HANDLE RootDirectory,
     _In_ PFILE_DIRECTORY_INFORMATION Information,
     _In_ PPH_LIST DirectoryList
