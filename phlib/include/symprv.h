@@ -451,7 +451,7 @@ PhIsStackFrameTypeInline(
     return FALSE;
 }
 
-BOOLEAN PhSymbolProviderInlineContextSupported(
+BOOLEAN NTAPI PhSymbolProviderInlineContextSupported(
     VOID
     );
 

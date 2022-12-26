@@ -953,7 +953,7 @@ VOID PhShellExecuteUserString(
     PhDereferenceObject(applicationDirectory);
 }
 
-VOID PhLoadSymbolProviderOptions(
+VOID NTAPI PhLoadSymbolProviderOptions(
     _Inout_ PPH_SYMBOL_PROVIDER SymbolProvider
     )
 {

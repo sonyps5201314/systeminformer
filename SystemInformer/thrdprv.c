@@ -144,7 +144,7 @@ PPH_THREAD_PROVIDER PhCreateThreadProvider(
     return threadProvider;
 }
 
-VOID PhpThreadProviderDeleteProcedure(
+VOID NTAPI PhpThreadProviderDeleteProcedure(
     _In_ PVOID Object,
     _In_ ULONG Flags
     )
@@ -253,7 +253,7 @@ PPH_THREAD_ITEM PhCreateThreadItem(
     return threadItem;
 }
 
-VOID PhpThreadItemDeleteProcedure(
+VOID NTAPI PhpThreadItemDeleteProcedure(
     _In_ PVOID Object,
     _In_ ULONG Flags
     )
@@ -268,7 +268,7 @@ VOID PhpThreadItemDeleteProcedure(
     if (threadItem->ServiceName) PhDereferenceObject(threadItem->ServiceName);
 }
 
-BOOLEAN PhpThreadHashtableEqualFunction(
+BOOLEAN NTAPI PhpThreadHashtableEqualFunction(
     _In_ PVOID Entry1,
     _In_ PVOID Entry2
     )
@@ -278,7 +278,7 @@ BOOLEAN PhpThreadHashtableEqualFunction(
         (*(PPH_THREAD_ITEM *)Entry2)->ThreadId;
 }
 
-ULONG PhpThreadHashtableHashFunction(
+ULONG NTAPI PhpThreadHashtableHashFunction(
     _In_ PVOID Entry
     )
 {
