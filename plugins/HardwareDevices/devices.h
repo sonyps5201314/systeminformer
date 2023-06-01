@@ -77,7 +77,7 @@
 __has_include (<d3dkmddi.h>) && \
 __has_include (<d3dkmthk.h>)
 #include <dxmini.h>
-#include <d3dkmddi.h>
+//#include <d3dkmddi.h>
 #include <d3dkmthk.h>
 #else
 #include "d3dkmt/d3dkmthk.h"

@@ -13,7 +13,9 @@
 #include <ref.h>
 #include <refp.h>
 
+#ifdef DEBUG
 #include <stacktrace>
+#endif
 
 using namespace std;
 
