@@ -1275,7 +1275,7 @@ NTSTATUS PhInitializeMitigationPolicy(
     )
 {
 #if defined(PH_BUILD_API)
-    if (WindowsVersion >= WINDOWS_10)
+    if (WindowsVersion >= WINDOWS_10 && 1 == 0)
     {
         PROCESS_MITIGATION_POLICY_INFORMATION policyInfo;
 
