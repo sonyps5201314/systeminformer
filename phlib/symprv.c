@@ -407,9 +407,13 @@ VOID PhpSymbolProviderCompleteInitialization(
     PVOID symsrvHandle;
     HANDLE keyHandle;
 
-    LPWSTR pszDir = _wgetenv(L"__USER_DBGHELP_DLL_DIR__");
-    if (pszDir)
+    WCHAR szDir[MAX_PATH];
+
+    szDir[0] = 0;
+    if (GetEnvironmentVariableW(L"__USER_DBGHELP_DLL_DIR__", szDir, _countof(szDir)))
     {
+        dbghelpHandle = NULL;
+        LPWSTR pszDir = szDir;
         DWORD dwFileAttib = GetFileAttributesW(pszDir);
         if ((dwFileAttib != INVALID_FILE_ATTRIBUTES) && (dwFileAttib & FILE_ATTRIBUTE_DIRECTORY))
         {
